@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #2a8761;
+        }
+        .panel{
+            width: 700px;
+            height: auto;
+            position:absolute;
+            left: 50%;
+            top: 30%;
+            transform: translateX(-50%);
+            background-color: #ffecec;
+            padding: 30px;
+            border-radius:20px;
+            left: -100%;
+            transition:.3s;
+        }
+        .panel.active{
+            left: 50%;
+        }
+        .panel p{
+            position: absolute;
+            top: -200%;
+            color: #ffecec;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        .text {
+            font-family: 'Arial';
+            font-size: 20px;
+
+
+        }
+        .inp {
+            position: absolute;
+            top: -50px;
+            opacity: 1;
+        }
+
+        .choose{
+            width: 800px;
+            height: 500px;
+            background-color: #ffecec;
+            border-radius:20px;
+            position:absolute;
+            left: 50%;
+            top: 10%;
+            transform:translateX(-50%);
+            display:flex;
+            justify-content: center;
+            padding: 20px;
+            transition: .3s;
+        }
+        .choose.close {
+            left: -100%;
+        }
+        .language p{
+            font-family: arial;
+            font-size: 30px;
+        }
+        .language input{
+            width: 50%;
+            height: 50px;
+            padding: 10px;
+            border-radius:20px;
+
+        }
+        .start {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform:translateX(-50%);
+            width: 200px;
+            height: 80px;
+            border:2px solid black;
+            border-radius:20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: arial;
+            transition:.3s;
+            -webkit-text-fill-color: black;
+        }
+        .start:hover{
+            box-shadow:inset 4px 4px 0px 0px black,-4px -4px 0px 0px black;
+            -webkit-text-stroke:2px  black;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+        .end {
+            position:absolute;
+            left: 50%;
+            bottom: 20%;
+            width: 100px;
+            height: 40px;
+            border: 2px solid white;
+            background-color: #3ceba2;
+            border-radius:15px;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            transition:.3s;
+        }
+        .end.close {
+            left: -100%;
+        }
+        .end:hover{
+            box-shadow: 5px 5px 10px white;
+            cursor:pointer;
+            border-color:black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="choose">
+        <div class="language">
+            <p align="left">Введите текст, если ничего не напишите я это сделаю сам на русском языке</p>
+            <input  type="text" id='what' value="" placeholder="введите текст">
+            <div class="start">
+                Start
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        
+        <div class="text">
+
+            
+        </div>
+        <p>ПЕЧАТАЙТЕ БЕЗ ПРОБЕЛОВ</p>
+        <input type="text" class="inp" placeholder="Нажмите TAB и печатайте">
+    </div>
+
+    <div class="end close">
+        restart
+    </div>
+    <script>
+        let start = document.querySelector('.start');
+        let inp = document.querySelector('.inp');
+        let text = document.querySelector('.text');
+        let panel = document.querySelector('.panel');
+        let choose = document.querySelector('.choose');
+        let end = document.querySelector('.end');
+        let what = document.querySelector('#what');
+
+
+        start.addEventListener('click', ()=>{
+            panel.classList.add('active');
+            choose.classList.add('close');
+            check();
+
+
+        });
+
+        end.addEventListener('click', ()=>{
+            panel.classList.remove('active');
+            choose.classList.remove('close');
+            end.classList.add('close');
+        })
+        function check(){
+            let YourText = what.value
+            let MyText = '2300 лет назад в малоазийском греческом городе Галикарнас был царь Мавсол. Перед смертью он решил построить себе храм-усыпальницу. для этого царь нанял лучших архитекторов и скульпторов. Архитекторы Пифей и Сатир предложили наиболее оригинальное решение. По имени Мавсола его усыпальница и была названа мавзолеем. Галикарнасские археологические находки можно увидеть в Британском музее в Лондоне.';
+            let res = ''
+
+
+            if(what.value !== ''){
+                text.innerText = YourText;
+                res = YourText
+            }else{
+                res = MyText
+                text.innerText = MyText;
+            }
+
+
+            
+            let dot1 = 0;
+            let dot2 = 0;
+            let errors = 0;
+            inp.addEventListener('focus', () => {
+                dot1 = new Date();
+
+                inp.addEventListener('keydown', function keydownHandler(event) {
+                    let txt = event.key;
+                    inp.value = '';
+
+                    if (txt === text.innerText[0]) {
+                        let p = text.innerText.split('');
+                        p.shift();
+                        text.innerText = p.join('');
+                    } else {
+                        if (txt != ' ') {
+                            errors += 1;
+                        }
+                    }
+
+                    if (text.innerText == '') {
+                        dot2 = new Date();
+                        let time = (dot2 - dot1) / 1000;
+                        let speed1 = Math.round(res.split(' ').join('').length * 60 / time);
+                        let speed2 = Math.round(res.split(' ').length * 60 / time);
+                        let accuracity = (
+                            res.split(' ').join('').length > errors ?
+                            Math.round(100 * (1 - errors / res.split(' ').join('').length)) :
+                            0
+                        );
+                        text.innerText = `время написания:${time},\n скорость: \n${speed1} знаков в минуту,\n${speed2} слов в минуту,\n количество ошибок:${errors}, \n точность: ${accuracity}%`;
+                        end.classList.remove('close');                            dot1 = 0;
+                        dot2 = 0;
+                        errors = 0;
+                        inp.blur();
+                        inp.removeEventListener('keydown', keydownHandler); 
+                        return;
+                    }
+                });
+            });
+
+        }
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
